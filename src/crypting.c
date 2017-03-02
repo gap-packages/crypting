@@ -163,7 +163,7 @@ Obj CRYPTING_SHA256(Obj self, Obj bytes)
     result = NEW_PLIST(T_PLIST, 8);
     SET_LEN_PLIST(result, 8);
     for(i=0;i<8;i++) {
-        SET_ELM_PLIST(result, i+1, INTOBJ_INT(h[i]));
+        SET_ELM_PLIST(result, i+1, ObjInt_UInt(h[i]));
         CHANGED_BAG(result);
     }
     return result;
