@@ -4,6 +4,5 @@
 # Declarations
 #
 
-#! @Description
-#!   Insert documentation for you function here
-DeclareGlobalFunction( "crypting_Example" );
+DeclareGlobalFunction("CRYPTING_HexStringIntPad");
+DeclareGlobalFunction("CRYPTING_HexStringIntPad8");
