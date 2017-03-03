@@ -4,6 +4,8 @@
 
 #include "src/compiled.h"          /* GAP headers */
 
+static Obj CRYPTING_SHA256_State_Type;
+
 /* Implements the SHA256 hash function as per the description in
  * https://web.archive.org/web/20130526224224/http://csrc.nist.gov/groups/STM/cavp/documents/shs/sha256-384-512.pdf
  */
@@ -14,21 +16,9 @@
    or words or something */
 
 
-static inline UInt4 RotateRight(UInt4 x, UInt4 n)
+static inline UInt4 RotateRight(UInt4 x, const UInt4 n)
 {
-    UInt8 temp;
-    UInt4 up, low;
-    UInt4 mask;
-
-    if(n == 0) {
-        return x;
-    } else {
-        temp = (UInt8)(x) << (32 - (n % 32));
-        mask = (1 << (32 - (n % 32))) - 1;
-        low = (temp >> 32) & mask;
-        up = (temp & 0xffffffff);
-        return low | up;
-    }
+    return (x >> n) | (x << (32 - n));
 }
 
 static inline UInt4 Ch(UInt4 x, UInt4 y, UInt4 z)
@@ -65,105 +55,181 @@ static const UInt4 rinit[] = {
     0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19 };
 
 /* TODO: These depend on endianness */
-static const UInt8 ByteSwapUInt8(UInt8 x)
+static void be32decode(UInt4 *dst, const UInt1 *src, UInt len)
 {
-    return (((x >> 56) |
-         ((x >> 40) & 0xff00) |
-         ((x >> 24) & 0xff0000) |
-         ((x >> 8) & 0xff000000) |
-         ((x << 8) & ((UInt8)0xff << 32)) |
-         ((x << 24) & ((UInt8)0xff << 40)) |
-         ((x << 40) & ((UInt8)0xff << 48)) |
-         ((x << 56))));
+    for(UInt i=0;i<(len >> 2);i++) {
+        dst[i] = (src[i*4] << 24)
+            | (src[i*4 + 1] << 16)
+            | (src[i*4 + 2] << 8)
+            | (src[i*4 + 3]);
+    }
 }
 
-static const UInt4 ByteSwapUInt4(UInt4 x)
+static void store64be(UInt8 *dst, UInt8 x)
 {
-    return (((x >> 24) |
-             ((x >> 8) & 0xff00) |
-             ((x << 8) & 0xff0000) |
-             ((x << 24) & 0xff000000))); 
+    *dst = (((x >> 56) |
+            ((x >> 40) & 0xff00) |
+            ((x >> 24) & 0xff0000) |
+            ((x >> 8) & 0xff000000) |
+            ((x << 8) & ((UInt8)0xff << 32)) |
+            ((x << 24) & ((UInt8)0xff << 40)) |
+            ((x << 40) & ((UInt8)0xff << 48)) |
+            ((x << 56))));
 }
 
-Obj CRYPTING_SHA256(Obj self, Obj bytes)
+typedef struct sha256_state_t {
+    UInt4 r[8];      /* Current hash value register */
+    UInt count;      /* Nr of bits already hashed */
+    UInt1 buf[64];   /* One chunk, 512 bits */
+} sha256_state_t;
+
+static int sha256_init(sha256_state_t *state)
 {
-    UInt len, plen;
-    UInt blocks;
-    UInt i, j, pos;
-    Int bits;
-    UChar *str;
-    UInt4 *msg;
+    memcpy(state->r, rinit, sizeof(rinit));
+    state->count = 0UL;
+
+    return 0;
+}
+
+static void sha256_transform(UInt4 state[8], const UInt1 block[64], UInt4 w[64], UInt4 r[8])
+{
+    UInt i;
     UInt4 temp1, temp2;
 
-    UInt4 r[8];
-    UInt4 h[8];
-    UInt4 w[64];
-
-    Obj buffer;
-    Obj result;
-
-    len = GET_LEN_STRING(bytes);
-
-    /* Message length needs to be a multiple of 512 bits (64 bytes) */
-
-    /* number of 0-bits to append */
-    bits = 448 - ((len*8) % 512) - 1;
-    if( bits < 0 )
-        bits += 512;
-
-    plen = len + (bits >> 3) + 1 + 8;
-
-    /* Number of 512 bit (64 byte) blocks */
-    blocks = plen >> 6;
-
-    buffer = NEW_STRING(plen);
-    SET_LEN_STRING(buffer, plen);
-    memcpy(CHARS_STRING(buffer), CHARS_STRING(bytes), len);
-
-    str = CHARS_STRING(buffer);
-    msg = (UInt4 *)str;
-
-    /* Do the padding */
-    str[len] = 0x80;
-    for(i=1;i<(bits >> 3);i++)
-        str[len+1] = 0x00;
-
-    pos = len + (bits >> 3) + 1;
-    *((UInt8 *)(&str[pos])) = ByteSwapUInt8(len * 8);
-
-    /* Init hash */
-    memcpy(h, rinit, sizeof(rinit));
-
-    for(i=0;i<blocks;i++) {
-        memcpy(r, h, sizeof(r));
-
-        /* A block is 512bit = 64bytes */
-        for(j=0;j<64;j++) {
-            if(j < 16) {
-                w[j] = ByteSwapUInt4(msg[(i << 4) + j]);
-            } else {
-                w[j] = sigma1(w[j-2]) + w[j-7] + sigma0(w[j-15]) + w[j-16];
-            }
-            temp1 = r[7] + Sigma1(r[4]) + Ch(r[4], r[5], r[6]) + k[j] + w[j];
-            temp2 = Sigma0(r[0]) + Maj(r[0],r[1],r[2]);
-            r[7] = r[6];
-            r[6] = r[5];
-            r[5] = r[4];
-            r[4] = r[3] + temp1;
-            r[3] = r[2];
-            r[2] = r[1];
-            r[1] = r[0];
-            r[0] = temp1 + temp2;
-        }
-
-        for(j=0;j<8;j++)
-            h[j] += r[j];
+    memcpy(r, state, 32);
+    be32decode(w, block, 64);
+    for(i=16;i<64;i++) {
+        w[i] = sigma1(w[i-2]) + w[i-7] + sigma0(w[i-15]) + w[i-16];
     }
+
+    /* A block is 512bit = 64bytes */
+    for(i=0;i<64;i++) {
+        temp1 = r[7] + Sigma1(r[4]) + Ch(r[4], r[5], r[6]) + k[i] + w[i];
+        temp2 = Sigma0(r[0]) + Maj(r[0],r[1],r[2]);
+        r[7] = r[6];
+        r[6] = r[5];
+        r[5] = r[4];
+        r[4] = r[3] + temp1;
+        r[3] = r[2];
+        r[2] = r[1];
+        r[1] = r[0];
+        r[0] = temp1 + temp2;
+    }
+    for(i=0;i<8;i++) {
+        state[i] += r[i];
+    }
+}
+
+static int sha256_update(sha256_state_t *state, const Char *buf, UInt8 len)
+{
+    UInt4 i,j,rem;
+    UInt4 w[64];
+    UInt4 r[8];
+
+    /* If there is buffered stuff in state, fill block */
+    rem = (state->count >> 3) & 0x3f;
+    /* Number of bits already hashed. Needed for continuation, and for
+       padding */
+    state->count += len << 3;
+
+    /* Not enough to hash full block, just buffer */
+    if (len < 64 - rem) {
+        for (i=0; i<len; i++) {
+            state->buf[rem + i] = buf[i];
+        }
+        return 0;
+    }
+    for (i=0; i<64-rem; i++) {
+        state->buf[rem+i] = buf[i];
+    }
+    /* Filled a block, do the SHA256 transform */
+    sha256_transform(state->r, state->buf, w, r);
+    buf += (UInt4)64 - rem;
+    len -= (UInt4)64 - rem;
+
+    /* Hash full blocks */
+    while(len >= 64) {
+        sha256_transform(state->r, buf, w, r);
+        buf += 64;
+        len -= 64;
+    }
+
+    /* Store remainder in buffer */
+    for(i=0;i<len;i++) {
+        state->buf[i] = buf[i];
+    }
+    memset(w, 0x0, sizeof(w));
+    memset(r, 0x0, sizeof(r));
+
+    return 0;
+}
+
+static int sha256_final(sha256_state_t *state)
+{
+    UInt8 rem;
+    UInt8 i;
+    UInt4 w[64];
+    UInt4 r[8];
+
+    rem = (state->count >> 3) & 0x3f;
+    state->buf[rem] = 0x80;
+    if(rem<56) {
+        for(i=1;i<56-rem;i++) {
+            state->buf[rem+i] = 0x00;
+        }
+    } else {
+        for(i=1;i<(UInt4)64-rem;i++) {
+            state->buf[rem + i] = 0x00;
+        }
+        sha256_transform(state->r, state->buf, w, r);
+        memset(state->buf, 0, 56);
+    }
+    store64be((UInt8 *)(&state->buf[56]), state->count);
+
+    sha256_transform(state->r, state->buf, w, r);
+
+    return 0;
+}
+
+Obj CRYPTING_SHA256_INIT(Obj self)
+{
+    Obj result;
+    sha256_state_t *sptr;
+
+    result = NewBag(T_DATOBJ, sizeof(UInt4) + sizeof(sha256_state_t));
+    SetTypeDatObj(result, CRYPTING_SHA256_State_Type);
+
+    sptr = (sha256_state_t *)(&ADDR_OBJ(result)[1]);
+    sha256_init(sptr);
+
+    return result;
+}
+
+Obj CRYPTING_SHA256_UPDATE(Obj self, Obj state, Obj bytes)
+{
+    sha256_state_t *sptr;
+
+    sptr = (sha256_state_t *)(&ADDR_OBJ(state)[1]);
+    sha256_update(sptr, CHARS_STRING(bytes), GET_LEN_STRING(bytes));
+    CHANGED_BAG(state);
+
+    return 0;
+}
+
+Obj CRYPTING_SHA256_FINAL(Obj self, Obj state)
+{
+    Obj result;
+    sha256_state_t *sptr;
 
     result = NEW_PLIST(T_PLIST, 8);
     SET_LEN_PLIST(result, 8);
-    for(i=0;i<8;i++) {
-        SET_ELM_PLIST(result, i+1, ObjInt_UInt(h[i]));
+
+    sptr = (sha256_state_t *)(&ADDR_OBJ(state)[1]);
+    sha256_final(sptr);
+    CHANGED_BAG(state);
+
+    for(int i=0;i<8;i++) {
+        SET_ELM_PLIST(result, i+1, ObjInt_UInt(sptr->r[i]));
         CHANGED_BAG(result);
     }
     return result;
@@ -179,7 +245,9 @@ typedef Obj (* GVarFunc)(/*arguments*/);
 
 // Table of functions to export
 static StructGVarFunc GVarFuncs [] = {
-    GVAR_FUNC_TABLE_ENTRY("crypting.c", CRYPTING_SHA256, 1, "bytes"),
+    GVAR_FUNC_TABLE_ENTRY("crypting.c", CRYPTING_SHA256_INIT, 0, ""),
+    GVAR_FUNC_TABLE_ENTRY("crypting.c", CRYPTING_SHA256_UPDATE, 2, "state, bytes"),
+    GVAR_FUNC_TABLE_ENTRY("crypting.c", CRYPTING_SHA256_FINAL, 1, "state"),
 
     { 0 } /* Finish with an empty entry */
 };
@@ -189,10 +257,12 @@ static StructGVarFunc GVarFuncs [] = {
 */
 static Int InitKernel( StructInitInfo *module )
 {
-    /* init filters and functions                                          */
+    ImportGVarFromLibrary( "CRYPTING_SHA256_State_Type", &CRYPTING_SHA256_State_Type);
+
+    /* init filters and functions */
     InitHdlrFuncsFromTable( GVarFuncs );
 
-    /* return success                                                      */
+    /* return success */
     return 0;
 }
 
@@ -204,7 +274,6 @@ static Int InitLibrary( StructInitInfo *module )
     /* init filters and functions */
     InitGVarFuncsFromTable( GVarFuncs );
 
-    /* return success                                                      */
     return 0;
 }
 

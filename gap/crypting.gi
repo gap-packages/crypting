@@ -4,6 +4,15 @@
 # Implementations
 #
 
+BindGlobal("CRYPTING_SHA256_State_Family",
+           NewFamily("CRYPTING_SHA256_State_Family"));
+
+
+BindGlobal("CRYPTING_SHA256_State_Type",
+           NewType(CRYPTING_SHA256_State_Family,
+                   IsSHA256State) );
+
+
 InstallGlobalFunction( CRYPTING_HexStringIntPad,
 function(i, len, pad)
     local result;
@@ -19,3 +28,17 @@ end);
 InstallGlobalFunction( CRYPTING_HexStringIntPad8,
     i -> CRYPTING_HexStringIntPad(i, 8, '0'));
 
+InstallMethod( ViewString, "for a SHA256 state",
+               [ IsSHA256State ], x -> "<sha256 state>");
+
+
+InstallGlobalFunction( SHA256String,
+function(str)
+    local s;
+
+    s := CRYPTING_SHA256_INIT();
+    CRYPTING_SHA256_UPDATE(s, str);
+    return CRYPTING_SHA256_FINAL(s);
+end);
+
+                         
