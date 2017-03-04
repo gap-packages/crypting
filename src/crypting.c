@@ -57,7 +57,8 @@ static const UInt4 rinit[] = {
 /* TODO: These depend on endianness */
 static void be32decode(UInt4 *dst, const UInt1 *src, UInt len)
 {
-    for(UInt i=0;i<(len >> 2);i++) {
+    UInt i;
+    for(i=0;i<(len >> 2);i++) {
         dst[i] = (src[i*4] << 24)
             | (src[i*4 + 1] << 16)
             | (src[i*4 + 2] << 8)
@@ -67,7 +68,8 @@ static void be32decode(UInt4 *dst, const UInt1 *src, UInt len)
 
 static void be32encode(UInt1 *dst, const UInt4 *src, UInt len)
 {
-    for(UInt i=0;i<(len >> 2);i++) {
+    UInt i;
+    for(i=0;i<(len >> 2);i++) {
         dst[4*i+0] = (src[i] & 0xff000000) >> 24;
         dst[4*i+1] = (src[i] & 0xff0000) >> 16;
         dst[4*i+2] = (src[i] & 0xff00) >> 8;
@@ -231,6 +233,7 @@ Obj CRYPTING_SHA256_FINAL(Obj self, Obj state)
 {
     Obj result;
     sha256_state_t *sptr;
+    int i;
 
     result = NEW_PLIST(T_PLIST, 8);
     SET_LEN_PLIST(result, 8);
@@ -239,7 +242,7 @@ Obj CRYPTING_SHA256_FINAL(Obj self, Obj state)
     sha256_final(sptr);
     CHANGED_BAG(state);
 
-    for(int i=0;i<8;i++) {
+    for(i=0;i<8;i++) {
         SET_ELM_PLIST(result, i+1, ObjInt_UInt(sptr->r[i]));
         CHANGED_BAG(result);
     }
@@ -290,7 +293,7 @@ Obj CRYPTING_SHA256_HMAC(Obj self, Obj key, Obj text)
 
     result = NEW_PLIST(T_PLIST, 8);
     SET_LEN_PLIST(result, 8);
-    for(int i=0;i<8;i++) {
+    for(i=0;i<8;i++) {
         SET_ELM_PLIST(result, i+1, ObjInt_UInt(st.r[i]));
         CHANGED_BAG(result);
     }
