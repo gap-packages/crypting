@@ -24,13 +24,11 @@ function(i, len, pad)
     return result;
 end);
 
-
 InstallGlobalFunction( CRYPTING_HexStringIntPad8,
     i -> CRYPTING_HexStringIntPad(i, 8, '0'));
 
 InstallMethod( ViewString, "for a SHA256 state",
                [ IsSHA256State ], x -> "<sha256 state>");
-
 
 InstallGlobalFunction( SHA256String,
 function(str)
@@ -41,4 +39,7 @@ function(str)
     return CRYPTING_SHA256_FINAL(s);
 end);
 
-                         
+InstallGlobalFunction( HMACSHA256,
+function(key, str)
+    return CRYPTING_HMAC_SHA256(key, str);
+end);
