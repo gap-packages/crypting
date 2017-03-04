@@ -65,6 +65,16 @@ static void be32decode(UInt4 *dst, const UInt1 *src, UInt len)
     }
 }
 
+static void be32encode(UInt1 *dst, const UInt4 *src, UInt len)
+{
+    for(UInt i=0;i<(len >> 2);i++) {
+        dst[4*i+0] = (src[i] & 0xff000000) >> 24;
+        dst[4*i+1] = (src[i] & 0xff0000) >> 16;
+        dst[4*i+2] = (src[i] & 0xff00) >> 8;
+        dst[4*i+3] = (src[i] & 0xff);
+    }
+}
+
 static void store64be(UInt8 *dst, UInt8 x)
 {
     *dst = (((x >> 56) |
@@ -87,6 +97,7 @@ static int sha256_init(sha256_state_t *state)
 {
     memcpy(state->r, rinit, sizeof(rinit));
     state->count = 0UL;
+    memset(state->buf, 0, 64);
 
     return 0;
 }
@@ -235,6 +246,57 @@ Obj CRYPTING_SHA256_FINAL(Obj self, Obj state)
     return result;
 }
 
+Obj CRYPTING_SHA256_HMAC(Obj self, Obj key, Obj text)
+{
+    UInt i, klen;
+    UInt1 k_ipad[64], k_opad[64];
+    UInt1 digest[32];
+    sha256_state_t st;
+    Obj result;
+
+    memset(k_ipad, 0x36, sizeof(k_ipad));
+    memset(k_opad, 0x5c, sizeof(k_opad));
+
+    klen = GET_LEN_STRING(key);
+    if(GET_LEN_STRING(key) > 64) {
+        sha256_init(&st);
+        sha256_update(&st, CHARS_STRING(key), klen);
+        sha256_final(&st);
+
+        be32encode(digest, st.r, sizeof(digest));
+        klen = 32;
+
+        for (i=0;i<klen;i++) {
+            k_ipad[i] ^= digest[i];
+            k_opad[i] ^= digest[i];
+        }
+    } else {
+        for (i=0;i<klen;i++) {
+            k_ipad[i] ^= CHARS_STRING(key)[i];
+            k_opad[i] ^= CHARS_STRING(key)[i];
+        }
+    }
+
+    sha256_init(&st);
+    sha256_update(&st, k_ipad, 64);
+    sha256_update(&st, CHARS_STRING(text), GET_LEN_STRING(text));
+    sha256_final(&st);
+
+    be32encode(digest, st.r, sizeof(digest));
+    sha256_init(&st);
+    sha256_update(&st, k_opad, 64);
+    sha256_update(&st, digest, 32);
+    sha256_final(&st);
+
+    result = NEW_PLIST(T_PLIST, 8);
+    SET_LEN_PLIST(result, 8);
+    for(int i=0;i<8;i++) {
+        SET_ELM_PLIST(result, i+1, ObjInt_UInt(st.r[i]));
+        CHANGED_BAG(result);
+    }
+    return result;
+}
+
 typedef Obj (* GVarFunc)(/*arguments*/);
 
 #define GVAR_FUNC_TABLE_ENTRY(srcfile, name, nparam, params) \
@@ -248,6 +310,7 @@ static StructGVarFunc GVarFuncs [] = {
     GVAR_FUNC_TABLE_ENTRY("crypting.c", CRYPTING_SHA256_INIT, 0, ""),
     GVAR_FUNC_TABLE_ENTRY("crypting.c", CRYPTING_SHA256_UPDATE, 2, "state, bytes"),
     GVAR_FUNC_TABLE_ENTRY("crypting.c", CRYPTING_SHA256_FINAL, 1, "state"),
+    GVAR_FUNC_TABLE_ENTRY("crypting.c", CRYPTING_SHA256_HMAC, 2, "key,text"),
 
     { 0 } /* Finish with an empty entry */
 };
