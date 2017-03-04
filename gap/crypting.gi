@@ -41,5 +41,5 @@ end);
 
 InstallGlobalFunction( HMACSHA256,
 function(key, str)
-    return CRYPTING_HMAC_SHA256(key, str);
+    return CRYPTING_SHA256_HMAC(key, str);
 end);
