@@ -5,7 +5,7 @@
 
 This package implements some cryptographic primitives. At the moment
 this is a custom implementation of SHA256 and HMAC, which is needed
-to sign messages in the Juptyer kernel.
+to sign messages in the Jupyter kernel.
 
 Bindings to a full crypto library are a possibility for the future, and
 pull-requests (after discussion) are appreciated.
