@@ -5,3 +5,5 @@ gap> Concatenation(List(CRYPTING_SHA256_HMAC("key", "The quick brown fox jumps o
 gap> str := RepeatedString("The quick brown fox jumps over the lazy dog.\n", 5000);;
 gap> Concatenation(List(CRYPTING_SHA256_HMAC("key", str), CRYPTING_HexStringIntPad8));
 "9319843BE4B7BBD7928B3DD7080B37E4CD46F9DC244812E3DD6783CF56C25AEE"
+gap> Concatenation(List(CRYPTING_SHA256_HMAC(str, str), CRYPTING_HexStringIntPad8));
+"9DC5FB7ECE7CC15F9DF778BA562ACAEDA325459C8CC0546AFB4A70EB6EE5E703"
