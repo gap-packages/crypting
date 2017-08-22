@@ -133,9 +133,9 @@ static void sha256_transform(UInt4 state[8], const UInt1 block[64], UInt4 w[64],
     }
 }
 
-static int sha256_update(sha256_state_t *state, const Char *buf, UInt8 len)
+static int sha256_update(sha256_state_t *state, const UChar *buf, UInt8 len)
 {
-    UInt4 i,j,rem;
+    UInt4 i,rem;
     UInt4 w[64];
     UInt4 r[8];
 
@@ -162,7 +162,7 @@ static int sha256_update(sha256_state_t *state, const Char *buf, UInt8 len)
 
     /* Hash full blocks */
     while(len >= 64) {
-        sha256_transform(state->r, buf, w, r);
+        sha256_transform(state->r, (const UInt1 *)buf, w, r);
         buf += 64;
         len -= 64;
     }
