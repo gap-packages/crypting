@@ -76,8 +76,11 @@ Dependencies := rec(
 ),
 
 AvailabilityTest := function()
-        return true;
-    end,
+    if Filename(DirectoriesPackagePrograms("crypting"), "crypting.so") = fail then
+ 	return fail; 
+    fi;	
+    return true;
+end,
 
 TestFile := "tst/testall.g",
 
