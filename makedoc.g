@@ -9,5 +9,4 @@ fi;
 
 AutoDoc( rec( scaffold := true, autodoc := true ) );
 
-PrintTo("VERSION", PackageInfo("crypting")[1].Version);
 
