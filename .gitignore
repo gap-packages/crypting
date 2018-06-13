@@ -19,12 +19,21 @@
 /doc/*.toc
 /doc/manual.pdf
 
+/doc/title.xml
+/doc/_*.xml
+
+.deps/
+.libs/
+
 /bin/
+/cnf
+/m4/libtool.m4
+/m4/ltoptions.m4
+/m4/ltsugar.m4
+/m4/ltversion.m4
+/m4/lt~obsolete.m4
 /obj/
 /Makefile
-
-*.la
-src/*.lo
 
 /tmp/
 /gh-pages/
