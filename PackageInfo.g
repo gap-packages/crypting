@@ -55,9 +55,11 @@ ArchiveFormats := ".tar.gz",
 ##    "dev"           for development versions of packages
 ##    "other"         for all other packages
 ##
-Status := "dev",
+Status := "deposited",
 
-AbstractHTML   :=  "",
+AbstractHTML := "The <span class=\"pkgname\">crypting</span> package provides some cryptographic primitives so that the JuptyerKernel package works.",
+
+JupyterKernelAbstractHTML   :=  "",
 
 PackageDoc := rec(
   BookName  := "crypting",
