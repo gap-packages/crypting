@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "crypting",
 Subtitle := "Hashes and Crypto in GAP",
-Version := "0.8",
-Date := "25/05/2018", # dd/mm/yyyy format
+Version := "0.9",
+Date := "22/09/2018", # dd/mm/yyyy format
 
 Persons := [
   rec(
