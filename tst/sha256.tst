@@ -5,3 +5,5 @@ gap> Concatenation(List(SHA256String("abcdbcdecdefdefgefghfghighijhijkijkljklmkl
 gap> str := RepeatedString("The quick brown fox jumps over the lazy dog.\n", 5000);;
 gap> Concatenation(List(SHA256String(str), CRYPTING_HexStringIntPad8));
 "4BAFDB160ACD4142C07293E6955A4CE4B449D27C9A35FA56481BED84F9F2493E"
+gap> SHA256String([(1,2)]);
+Error, usage: str has to be a string
