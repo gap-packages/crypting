@@ -221,6 +221,10 @@ Obj FuncCRYPTING_SHA256_INIT(Obj self)
 Obj FuncCRYPTING_SHA256_UPDATE(Obj self, Obj state, Obj bytes)
 {
     sha256_state_t *sptr;
+    if (!IS_STRING(bytes) || !IS_STRING_REP(bytes)) {
+        ErrorQuit("usage: bytes has to be a string in IsStringRep", 0L, 0L);
+        return Fail;
+    }
 
     sptr = (sha256_state_t *)(&ADDR_OBJ(state)[1]);
     sha256_update(sptr, CHARS_STRING(bytes), GET_LEN_STRING(bytes));
@@ -256,6 +260,15 @@ Obj FuncCRYPTING_SHA256_HMAC(Obj self, Obj key, Obj text)
     UInt1 digest[32];
     sha256_state_t st;
     Obj result;
+
+    if (!IS_STRING(key) || !IS_STRING_REP(key)) {
+        ErrorQuit("usage: key has to be a string in IsStringRep", 0L, 0L);
+        return Fail;
+    }
+    if (!IS_STRING(text) || !IS_STRING_REP(text)) {
+        ErrorQuit("usage: text has to be a string in IsStringRep", 0L, 0L);
+        return Fail;
+    }
 
     memset(k_ipad, 0x36, sizeof(k_ipad));
     memset(k_opad, 0x5c, sizeof(k_opad));
