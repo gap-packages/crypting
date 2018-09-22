@@ -204,7 +204,7 @@ static int sha256_final(sha256_state_t *state)
     return 0;
 }
 
-Obj CRYPTING_SHA256_INIT(Obj self)
+Obj FuncCRYPTING_SHA256_INIT(Obj self)
 {
     Obj result;
     sha256_state_t *sptr;
@@ -218,7 +218,7 @@ Obj CRYPTING_SHA256_INIT(Obj self)
     return result;
 }
 
-Obj CRYPTING_SHA256_UPDATE(Obj self, Obj state, Obj bytes)
+Obj FuncCRYPTING_SHA256_UPDATE(Obj self, Obj state, Obj bytes)
 {
     sha256_state_t *sptr;
 
@@ -229,7 +229,7 @@ Obj CRYPTING_SHA256_UPDATE(Obj self, Obj state, Obj bytes)
     return 0;
 }
 
-Obj CRYPTING_SHA256_FINAL(Obj self, Obj state)
+Obj FuncCRYPTING_SHA256_FINAL(Obj self, Obj state)
 {
     Obj result;
     sha256_state_t *sptr;
@@ -249,7 +249,7 @@ Obj CRYPTING_SHA256_FINAL(Obj self, Obj state)
     return result;
 }
 
-Obj CRYPTING_SHA256_HMAC(Obj self, Obj key, Obj text)
+Obj FuncCRYPTING_SHA256_HMAC(Obj self, Obj key, Obj text)
 {
     UInt i, klen;
     UInt1 k_ipad[64], k_opad[64];
@@ -300,20 +300,12 @@ Obj CRYPTING_SHA256_HMAC(Obj self, Obj key, Obj text)
     return result;
 }
 
-typedef Obj (* GVarFunc)(/*arguments*/);
-
-#define GVAR_FUNC_TABLE_ENTRY(srcfile, name, nparam, params) \
-  {#name, nparam, \
-   params, \
-   (GVarFunc)name, \
-   srcfile ":Func" #name }
-
 // Table of functions to export
 static StructGVarFunc GVarFuncs [] = {
-    GVAR_FUNC_TABLE_ENTRY("crypting.c", CRYPTING_SHA256_INIT, 0, ""),
-    GVAR_FUNC_TABLE_ENTRY("crypting.c", CRYPTING_SHA256_UPDATE, 2, "state, bytes"),
-    GVAR_FUNC_TABLE_ENTRY("crypting.c", CRYPTING_SHA256_FINAL, 1, "state"),
-    GVAR_FUNC_TABLE_ENTRY("crypting.c", CRYPTING_SHA256_HMAC, 2, "key,text"),
+    GVAR_FUNC(CRYPTING_SHA256_INIT, 0, ""),
+    GVAR_FUNC(CRYPTING_SHA256_UPDATE, 2, "state, bytes"),
+    GVAR_FUNC(CRYPTING_SHA256_FINAL, 1, "state"),
+    GVAR_FUNC(CRYPTING_SHA256_HMAC, 2, "key, text"),
 
     { 0 } /* Finish with an empty entry */
 };
