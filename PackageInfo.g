@@ -57,7 +57,7 @@ ArchiveFormats := ".tar.gz",
 ##
 Status := "deposited",
 
-AbstractHTML := "The <span class=\"pkgname\">crypting</span> package provides some cryptographic primitives so that the JuptyerKernel package works.",
+AbstractHTML := "The <span class=\"pkgname\">crypting</span> package provides some cryptographic primitives so that the <span class=\"pkgname\">JupyterKernel</span> package works.",
 
 JupyterKernelAbstractHTML   :=  "",
 
