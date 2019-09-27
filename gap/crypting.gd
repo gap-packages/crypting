@@ -16,14 +16,14 @@ DeclareCategory("IsSHA256State", IsObject);
 # DeclareGlobalVariable("CRYPTING_SHA256_State_Type", "State of SHA256");
 
 #! @Description
-#!   Call <Ref Label="HexStringInt"/> on the argument <A>int</A>
+#!   Call <Ref Label="HexStringInt" BookName="ref"/> on the argument <A>int</A>
 #!   then pad the string on the left to <A>length</A> using padding
 #!   letter <A>pad</A>
 #! @Arguments int, pad, length
 DeclareGlobalFunction("CRYPTING_HexStringIntPad");
 
 #! @Description
-#!   Call <Ref Label="HexStringInt"/> on the argument <A>int</A>
+#!   Call <Ref Label="HexStringInt" BookName="ref"/> on the argument <A>int</A>
 #!   then pad the string on the left to length 8 using padding
 #!   letter 0.
 #! @Arguments int
