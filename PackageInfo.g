@@ -12,6 +12,7 @@ PackageName := "crypting",
 Subtitle := "Hashes and Crypto in GAP",
 Version := "0.9",
 Date := "22/09/2018", # dd/mm/yyyy format
+License := "BSD-3-Clause",
 
 Persons := [
   rec(
