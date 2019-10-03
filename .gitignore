@@ -20,11 +20,8 @@
 /doc/manual.pdf
 
 /bin/
-/obj/
+/gen/
 /Makefile
-
-*.la
-src/*.lo
 
 /tmp/
 /gh-pages/
