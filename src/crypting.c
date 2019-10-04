@@ -54,7 +54,12 @@ static const UInt4 rinit[] = {
     0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
     0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19 };
 
-/* TODO: These depend on endianness */
+#ifdef WORDS_BIGENDIAN
+#include <string.h>
+#define be32decode(dst, src, len) memcpy(dst, src, len)
+#define be32encode(dst, src, len) memcpy(dst, src, len)
+#define store64be(dst, x) *dst = x
+#else
 static void be32decode(UInt4 *dst, const UInt1 *src, UInt len)
 {
     UInt i;
@@ -88,6 +93,7 @@ static void store64be(UInt8 *dst, UInt8 x)
             ((x << 40) & ((UInt8)0xff << 48)) |
             ((x << 56))));
 }
+#endif
 
 typedef struct sha256_state_t {
     UInt4 r[8];      /* Current hash value register */
