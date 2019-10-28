@@ -1,0 +1,51 @@
+  
+  [1X1 [33X[0;0YCryptinG Functions[133X[101X
+  
+  
+  [1X1.1 [33X[0;0YInternal Types and Functions[133X[101X
+  
+  [1X1.1-1 IsSHA256State[101X
+  
+  [33X[1;0Y[29X[2XIsSHA256State[102X( [3Xarg[103X ) [32X filter[133X
+  [6XReturns:[106X  [33X[0;10Y[10Xtrue[110X or [10Xfalse[110X[133X
+  
+  [1X1.1-2 CRYPTING_SHA256_State_Family[101X
+  
+  [33X[1;0Y[29X[2XCRYPTING_SHA256_State_Family[102X[32X global variable[133X
+  
+  [1X1.1-3 CRYPTING_SHA256_State_Type[101X
+  
+  [33X[1;0Y[29X[2XCRYPTING_SHA256_State_Type[102X[32X global variable[133X
+  
+  [1X1.1-4 CRYPTING_HexStringIntPad[101X
+  
+  [33X[1;0Y[29X[2XCRYPTING_HexStringIntPad[102X( [3Xint[103X, [3Xpad[103X, [3Xlength[103X ) [32X function[133X
+  
+  [33X[0;0YCall  [14XReference: HexStringInt[114X on the argument [3Xint[103X then pad the string on the
+  left to [3Xlength[103X using padding letter [3Xpad[103X[133X
+  
+  [1X1.1-5 CRYPTING_HexStringIntPad8[101X
+  
+  [33X[1;0Y[29X[2XCRYPTING_HexStringIntPad8[102X( [3Xint[103X ) [32X function[133X
+  
+  [33X[0;0YCall  [14XReference: HexStringInt[114X on the argument [3Xint[103X then pad the string on the
+  left to length 8 using padding letter 0.[133X
+  
+  
+  [1X1.2 [33X[0;0YHash functions[133X[101X
+  
+  [1X1.2-1 SHA256String[101X
+  
+  [33X[1;0Y[29X[2XSHA256String[102X( [3Xstring[103X ) [32X function[133X
+  
+  [33X[0;0YCompute the SHA256 hash of the argument [3Xstring[103X in [10XIsStringRep[110X[133X
+  
+  
+  [1X1.3 [33X[0;0YHMAC[133X[101X
+  
+  [1X1.3-1 HMACSHA256[101X
+  
+  [33X[1;0Y[29X[2XHMACSHA256[102X( [3Xkey[103X, [3Xstring[103X ) [32X function[133X
+  
+  [33X[0;0YCompute the HMAC SHA256 given a [3Xkey[103X and a [3Xstring[103X in [10XIsStringRep[110X.[133X
+  
