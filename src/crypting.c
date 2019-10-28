@@ -216,7 +216,7 @@ Obj FuncCRYPTING_SHA256_INIT(Obj self)
     sha256_state_t *sptr;
 
     result = NewBag(T_DATOBJ, sizeof(UInt4) + sizeof(sha256_state_t));
-    SetTypeDatObj(result, CRYPTING_SHA256_State_Type);
+    SET_TYPE_OBJ(result, CRYPTING_SHA256_State_Type);
 
     sptr = (sha256_state_t *)(&ADDR_OBJ(result)[1]);
     sha256_init(sptr);
