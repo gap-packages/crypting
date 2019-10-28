@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "crypting",
 Subtitle := "Hashes and Crypto in GAP",
-Version := "0.9",
-Date := "22/09/2018", # dd/mm/yyyy format
+Version := "0.10",
+Date := "28/10/2019", # dd/mm/yyyy format
 License := "BSD-3-Clause",
 
 Persons := [
@@ -21,15 +21,15 @@ Persons := [
     FirstNames := "Markus",
     LastName := "Pfeiffer",
     WWWHome := "http://www.morphism.de/~markusp/",
-    Email := "markus.pfeiffer@st-andrews.ac.uk",
-    PostalAddress := Concatenation(
-               "School of Computer Science\n",
-               "North HaughSt Andrews\n",
-               "Fife\n",
-               "KY16 9SX\n",
-               "United Kingdom" ),
+    Email := "markus.pfeiffer+gap@morphism.de",
     Place := "St Andrews",
-    Institution := "University of St Andrews",
+  ),
+  rec(
+    LastName := "GAP Team",
+    FirstNames := "The",
+    IsAuthor := false,
+    IsMaintainer := true,
+    Email := "support@gap-system.org",
   ),
 ],
 
