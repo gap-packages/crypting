@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "crypting",
 Subtitle := "Hashes and Crypto in GAP",
-Version := "0.10",
-Date := "28/10/2019", # dd/mm/yyyy format
+Version := "0.10.2",
+Date := "09/09/2022", # dd/mm/yyyy format
 License := "BSD-3-Clause",
 
 Persons := [
@@ -65,7 +65,7 @@ JupyterKernelAbstractHTML   :=  "",
 PackageDoc := rec(
   BookName  := "crypting",
   ArchiveURLSubset := ["doc"],
-  HTMLStart := "doc/chap0.html",
+  HTMLStart := "doc/chap0_mj.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
   LongTitle := "Hashes and Crypto in GAP",
