@@ -19,9 +19,8 @@
 /doc/*.toc
 /doc/manual.pdf
 
-/doc/_AutoDocMainFile.xml
-/doc/_Chapter_CryptinG_Functions.xml
-/doc/_Chunks.xml
+/doc/_*.xml
+/doc/crypting.xml
 /doc/title.xml
 
 /bin/
