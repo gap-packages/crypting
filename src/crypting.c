@@ -2,7 +2,7 @@
  * crypting: Hashes and Crypto in GAP
  */
 
-#include "src/compiled.h"          /* GAP headers */
+#include "compiled.h"   // GAP headers
 
 static Obj CRYPTING_SHA256_State_Type;
 
