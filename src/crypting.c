@@ -54,6 +54,25 @@ static const UInt4 rinit[] = {
     0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
     0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19 };
 
+// determine endianess, the lazy way (the proper way
+// would be using a configure script and checking by test-compiling
+// some code and using the result to #define a suitable flag)
+#if defined(__BYTE_ORDER__)
+  #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+  #define WORDS_BIGENDIAN 1
+  #elif __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+  #undef WORDS_BIGENDIAN
+  #else
+  #error Unsupported __BYTE_ORDER__
+  #endif
+#elif defined(__BIG_ENDIAN__) && __BIG_ENDIAN__
+#define WORDS_BIGENDIAN 1
+#elif defined(__LITTLE_ENDIAN__) && __LITTLE_ENDIAN__
+#undef WORDS_BIGENDIAN
+#else
+#error Could not determine endianess
+#endif
+
 #ifdef WORDS_BIGENDIAN
 #include <string.h>
 #define be32decode(dst, src, len) memcpy(dst, src, len)
