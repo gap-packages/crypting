@@ -1,5 +1,6 @@
 name: crypting
 version: "0.10.4"
+license: "BSD-3-Clause"
 date: 2022-11-02
 description: |
     Hashes and Crypto in GAP
