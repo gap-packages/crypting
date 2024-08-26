@@ -3,10 +3,9 @@
 #
 # Reading the declaration part of the package.
 #
-_PATH_SO:=Filename(DirectoriesPackagePrograms("crypting"), "crypting.so");
-if _PATH_SO <> fail then
-    LoadDynamicModule(_PATH_SO);
+
+if not LoadKernelExtension("crypting") then
+  Error("failed to load the crypting package kernel extension");
 fi;
-Unbind(_PATH_SO);
 
 ReadPackage( "crypting", "gap/crypting.gd");
