@@ -6,10 +6,10 @@
                            [1X Hashes and Crypto in [5XGAP[105X [101X
   
   
-                                     0.10.4
+                                     0.10.5
   
   
-                                2 November 2022
+                                3 September 2024
   
   
                                 Markus Pfeiffer

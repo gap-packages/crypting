@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "crypting",
 Subtitle := "Hashes and Crypto in GAP",
-Version := "0.10.4",
-Date := "02/11/2022", # dd/mm/yyyy format
+Version := "0.10.5",
+Date := "03/09/2024", # dd/mm/yyyy format
 License := "BSD-3-Clause",
 
 Persons := [
@@ -72,17 +72,20 @@ PackageDoc := rec(
 ),
 
 Dependencies := rec(
-  GAP := ">= 4.10",
+  GAP := ">= 4.12",
   NeededOtherPackages := [ [ "GAPDoc", ">= 1.5" ] ],
   SuggestedOtherPackages := [ ],
   ExternalConditions := [ ],
 ),
 
 AvailabilityTest := function()
-    if Filename(DirectoriesPackagePrograms("crypting"), "crypting.so") = fail then
- 	return fail; 
-    fi;	
-    return true;
+   if not IsKernelExtensionAvailable("crypting") then
+     LogPackageLoadingMessage(PACKAGE_WARNING,
+                              ["the kernel module is not compiled, ",
+                               "the package cannot be loaded."]);
+     return fail;
+  fi;
+  return true;
 end,
 
 TestFile := "tst/testall.g",
@@ -90,5 +93,3 @@ TestFile := "tst/testall.g",
 #Keywords := [ "TODO" ],
 
 ));
-
-
