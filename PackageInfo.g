@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "crypting",
 Subtitle := "Hashes and Crypto in GAP",
-Version := "0.10.5",
-Date := "03/09/2024", # dd/mm/yyyy format
+Version := "0.10.6",
+Date := "20/06/2025", # dd/mm/yyyy format
 License := "BSD-3-Clause",
 
 Persons := [
@@ -83,7 +83,7 @@ AvailabilityTest := function()
      LogPackageLoadingMessage(PACKAGE_WARNING,
                               ["the kernel module is not compiled, ",
                                "the package cannot be loaded."]);
-     return fail;
+     return false;
   fi;
   return true;
 end,
