@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/gap-packages/crypting/workflows/CI/badge.svg?branch=master)](https://github.com/gap-packages/crypting/actions?query=workflow%3ACI+branch%3Amaster)
+[![CI](https://github.com/gap-packages/crypting/actions/workflows/CI.yml/badge.svg)](https://github.com/gap-packages/crypting/actions/workflows/CI.yml)
 [![Code Coverage](https://codecov.io/github/gap-packages/crypting/coverage.svg?branch=master&token=)](https://codecov.io/gh/gap-packages/crypting)
 
 # The GAP 4 package `crypting'
