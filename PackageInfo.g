@@ -1,95 +1,103 @@
-#
-# crypting: Hashes and Crypto in GAP
-#
-# This file contains package meta data. For additional information on
-# the meaning and correct usage of these fields, please consult the
-# manual of the "Example" package as well as the comments in its
-# PackageInfo.g file.
-#
+#############################################################################
+##  
+##  Demo PackageInfo.g for the GitHubPagesForGAP
+##
+
 SetPackageInfo( rec(
 
-PackageName := "crypting",
-Subtitle := "Hashes and Crypto in GAP",
-Version := "0.10.6",
-Date := "20/06/2025", # dd/mm/yyyy format
-License := "BSD-3-Clause",
+PackageName := "GitHubPagesForGAP",
+
+Subtitle := "A GitHub Pages generator for GAP packages",
+Version := "0.4",
+Date := "10/04/2025", # dd/mm/yyyy format
+License := "0BSD",
 
 Persons := [
   rec(
-    IsAuthor := true,
-    IsMaintainer := true,
-    FirstNames := "Markus",
-    LastName := "Pfeiffer",
-    WWWHome := "http://www.morphism.de/~markusp/",
-    Email := "markus.pfeiffer+gap@morphism.de",
-    Place := "St Andrews",
+    LastName      := "Horn",
+    FirstNames    := "Max",
+    IsAuthor      := true,
+    IsMaintainer  := true,
+    Email         := "mhorn@rptu.de",
+    WWWHome       := "https://www.quendi.de/math",
+    GitHubUsername:= "fingolfin",
+    PostalAddress := Concatenation(
+                       "Fachbereich Mathematik\n",
+                       "RPTU Kaiserslautern-Landau\n",
+                       "Gottlieb-Daimler-Straße 48\n",
+                       "67663 Kaiserslautern\n",
+                       "Germany" ),
+    Place         := "Kaiserslautern, Germany",
+    Institution   := "RPTU Kaiserslautern-Landau"
   ),
+
   rec(
-    LastName := "GAP Team",
-    FirstNames := "The",
-    IsAuthor := false,
-    IsMaintainer := true,
-    Email := "support@gap-system.org",
+    LastName      := "Thor",
+    FirstNames    := "A. U.",
+    IsAuthor      := true,
+    IsMaintainer  := false,
+    #Email         := "author@example.com",
+  ),
+
+  rec(
+    LastName      := "Itor",
+    FirstNames    := "Jan",
+    IsAuthor      := false,
+    IsMaintainer  := true,
+    #Email         := "janitor@example.com",
   ),
 ],
 
-SourceRepository := rec(
-    Type := "git",
-    URL := Concatenation( "https://github.com/gap-packages/", ~.PackageName ),
-),
-IssueTrackerURL := Concatenation( ~.SourceRepository.URL, "/issues" ),
-#SupportEmail   := "TODO",
-PackageWWWHome  := "https://gap-packages.github.io/crypting/",
-PackageInfoURL  := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
-README_URL      := Concatenation( ~.PackageWWWHome, "README.md" ),
-ArchiveURL      := Concatenation( ~.SourceRepository.URL,
-                                 "/releases/download/v", ~.Version,
-                                 "/", ~.PackageName, "-", ~.Version ),
+Status := "other",
 
-ArchiveFormats := ".tar.gz",
+# The following are not strictly necessary in your own PackageInfo.g
+# (in the sense that update.g only looks at the usual fields
+# like PackageWWWHome, ArchiveURL etc.). But they are convenient
+# if you use exactly the scheme for your package website that we propose.
+GithubUser := "gap-system",
+GithubRepository := ~.PackageName,
+GithubWWW := Concatenation("https://github.com/", ~.GithubUser, "/", ~.GithubRepository),
 
-##  Status information. Currently the following cases are recognized:
-##    "accepted"      for successfully refereed packages
-##    "submitted"     for packages submitted for the refereeing
-##    "deposited"     for packages for which the GAP developers agreed
-##                    to distribute them with the core GAP system
-##    "dev"           for development versions of packages
-##    "other"         for all other packages
-##
-Status := "deposited",
+PackageWWWHome := Concatenation("https://", ~.GithubUser, ".github.io/", ~.GithubRepository, "/"),
+README_URL     := Concatenation( ~.PackageWWWHome, "README.md" ),
+PackageInfoURL := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
+# The following assumes you are using the Github releases system. If not, adjust
+# it accordingly.
+ArchiveURL     := Concatenation(~.GithubWWW,
+                    "/releases/download/v", ~.Version, "/",
+                    ~.GithubRepository, "-", ~.Version),
 
-AbstractHTML := "The <span class=\"pkgname\">crypting</span> package provides some cryptographic primitives so that the <span class=\"pkgname\">JupyterKernel</span> package works.",
+ArchiveFormats := ".tar.gz .tar.bz2",
 
-JupyterKernelAbstractHTML   :=  "",
+AbstractHTML := 
+  "This is a pseudo package that contains no actual\
+  <span class=\"pkgname\">GAP</span> code. Instead, it is a template for other\
+  GAP packages that allows to quickly setup GitHub Pages.",
 
 PackageDoc := rec(
-  BookName  := "crypting",
+  BookName  := "GitHubPagesForGAP",
   ArchiveURLSubset := ["doc"],
-  HTMLStart := "doc/chap0_mj.html",
+  HTMLStart := "doc/chap0.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
-  LongTitle := "Hashes and Crypto in GAP",
+  LongTitle := "A GitHub Pages generator for GAP packages",
 ),
 
+# The following dependencies are fake and for testing / demo purposes
 Dependencies := rec(
-  GAP := ">= 4.12",
-  NeededOtherPackages := [ [ "GAPDoc", ">= 1.5" ] ],
-  SuggestedOtherPackages := [ ],
-  ExternalConditions := [ ],
+  GAP := ">=4.8.1",
+  NeededOtherPackages := [
+    ["GAPDoc", ">= 1.2"],
+    ["IO", ">= 4.1"],
+  ],
+  SuggestedOtherPackages := [["orb", ">= 4.2"]],
+  ExternalConditions := []
 ),
 
-AvailabilityTest := function()
-   if not IsKernelExtensionAvailable("crypting") then
-     LogPackageLoadingMessage(PACKAGE_WARNING,
-                              ["the kernel module is not compiled, ",
-                               "the package cannot be loaded."]);
-     return false;
-  fi;
-  return true;
-end,
+AvailabilityTest := ReturnTrue,
 
-TestFile := "tst/testall.g",
-
-#Keywords := [ "TODO" ],
+Keywords := ["GitHub Pages", "GAP"]
 
 ));
+
+
