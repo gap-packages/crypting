@@ -13,19 +13,16 @@ BindGlobal("CRYPTING_SHA256_State_Type",
                    IsSHA256State) );
 
 
-InstallGlobalFunction( CRYPTING_HexStringIntPad,
-function(i, len, pad)
+InstallGlobalFunction( CRYPTING_HexStringIntPad8,
+function(i)
     local result;
 
     result := HexStringInt(i);
-    if Length(result) < len then
-        result := Concatenation(RepeatedString(pad,len - Length(result)), result);
+    if Length(result) < 8 then
+        result := Concatenation(ListWithIdenticalEntries(8 - Length(result), '0'), result);
     fi;
     return result;
 end);
-
-InstallGlobalFunction( CRYPTING_HexStringIntPad8,
-    i -> CRYPTING_HexStringIntPad(i, 8, '0'));
 
 InstallMethod( ViewString, "for a SHA256 state",
                [ IsSHA256State ], x -> "<sha256 state>");
