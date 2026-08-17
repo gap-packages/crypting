@@ -10,7 +10,7 @@ BindGlobal("CRYPTING_SHA256_State_Family",
 
 BindGlobal("CRYPTING_SHA256_State_Type",
            NewType(CRYPTING_SHA256_State_Family,
-                   IsSHA256State) );
+                   IsCryptingSHA256State) );
 
 
 InstallGlobalFunction( CRYPTING_HexStringIntPad,
@@ -28,7 +28,7 @@ InstallGlobalFunction( CRYPTING_HexStringIntPad8,
     i -> CRYPTING_HexStringIntPad(i, 8, '0'));
 
 InstallMethod( ViewString, "for a SHA256 state",
-               [ IsSHA256State ], x -> "<sha256 state>");
+               [ IsCryptingSHA256State ], x -> "<sha256 state>");
 
 InstallGlobalFunction( SHA256String,
 function(str)

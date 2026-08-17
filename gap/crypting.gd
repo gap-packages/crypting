@@ -11,7 +11,7 @@
 #
 
 #!
-DeclareCategory("IsSHA256State", IsObject);
+DeclareCategory("IsCryptingSHA256State", IsObject);
 # DeclareGlobalVariable("CRYPTING_SHA256_State_Family");
 # DeclareGlobalVariable("CRYPTING_SHA256_State_Type", "State of SHA256");
 
